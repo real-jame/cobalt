@@ -13,7 +13,7 @@ import { sha256 } from "../modules/util/crypto.js";
 import { verifyStream } from "../modules/stream/manage.js";
 
 export function runAPI(express, app, gitCommit, gitBranch, __dirname) {
-    const corsConfig = process.env.cors === '0' ? {
+    const corsConfig = process.env.ENABLE_CORS === '0' ? {
         origin: process.env.CORS_URL,
         optionsSuccessStatus: 200
     } : {};
@@ -27,7 +27,7 @@ export function runAPI(express, app, gitCommit, gitBranch, __dirname) {
         handler: (req, res, next, opt) => {
             return res.status(429).json({
                 "status": "rate-limit",
-                "text": loc(languageCode(req), 'ErrorRateLimit')
+                "text": 'ErrorRateLimit'
             });
         }
     });
@@ -40,7 +40,7 @@ export function runAPI(express, app, gitCommit, gitBranch, __dirname) {
         handler: (req, res, next, opt) => {
             return res.status(429).json({
                 "status": "rate-limit",
-                "text": loc(languageCode(req), 'ErrorRateLimit')
+                "text": 'ErrorRateLimit'
             });
         }
     });
@@ -101,11 +101,11 @@ export function runAPI(express, app, gitCommit, gitBranch, __dirname) {
                     j = await getJSON(chck.url, lang, chck);
                 } else {
                     j = apiJSON(0, {
-                        t: !contentCon ? "invalid content type header" : loc(lang, 'ErrorNoLink')
+                        t: !contentCon ? "invalid content type header" : 'ErrorNoLink'
                     });
                 }
             } catch (e) {
-                j = apiJSON(0, { t: loc(lang, 'ErrorCantProcess') });
+                j = apiJSON(0, { t: 'ErrorCantProcess' });
             }
             return res.status(j.status).json(j.body);
         } catch (e) {
@@ -140,9 +140,9 @@ export function runAPI(express, app, gitCommit, gitBranch, __dirname) {
                         version: version,
                         commit: gitCommit,
                         branch: gitBranch,
-                        name: process.env.apiName || "unknown",
-                        url: process.env.apiURL,
-                        cors: process.env?.cors === "0" ? 0 : 1,
+                        name: process.env.API_NAME || "unknown",
+                        url: process.env.API_URL,
+                        cors: process.env?.ENABLE_CORS === "0" ? 0 : 1,
                         startTime: `${startTimestamp}`
                     });
                 default:
@@ -154,7 +154,7 @@ export function runAPI(express, app, gitCommit, gitBranch, __dirname) {
         } catch (e) {
             return res.status(500).json({
                 status: "error",
-                text: loc(languageCode(req), 'ErrorCantProcess')
+                text: 'ErrorCantProcess'
             });
         }
     });
@@ -162,18 +162,18 @@ export function runAPI(express, app, gitCommit, gitBranch, __dirname) {
         res.status(200).end()
     });
     app.get('/favicon.ico', (req, res) => {
-        res.sendFile(`${__dirname}/src/front/icons/favicon.ico`)
+        res.sendFile(`${__dirname}/api/assets/favicon.ico`)
     });
     app.get('/*', (req, res) => {
         res.redirect('/api/json')
     });
 
-    app.listen(process.env.apiPort || 9000, () => {
+    app.listen(process.env.API_PORT || 9000, () => {
         console.log(`\n` +
             `${Cyan("cobalt")} API ${Bright(`v.${version}-${gitCommit} (${gitBranch})`)}\n` +
             `Start time: ${Bright(`${startTime.toUTCString()} (${startTimestamp})`)}\n\n` +
-            `URL: ${Cyan(`${process.env.apiURL}`)}\n` +
-            `Port: ${process.env.apiPort || 9000}\n`
+            `URL: ${Cyan(`${process.env.API_URL}`)}\n` +
+            `Port: ${process.env.API_PORT || 9000}\n`
         )
     });
 }

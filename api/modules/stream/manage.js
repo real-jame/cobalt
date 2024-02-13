@@ -2,8 +2,8 @@ import NodeCache from "node-cache";
 import { randomBytes } from "crypto";
 import { nanoid } from 'nanoid';
 
-import { sha256 } from "../sub/crypto.js";
-import { streamLifespan } from "../config.js";
+import { sha256 } from "../util/crypto.js";
+import { streamLifespan } from "../../core/config.js";
 
 const streamCache = new NodeCache({
     stdTTL: streamLifespan/1000,
@@ -43,7 +43,7 @@ export function createStream(obj) {
         exp = streamInfo.exp;
         ghmac = streamInfo.hmac;
     }
-    return `${process.env.apiURL}api/stream?t=${streamID}&e=${exp}&h=${ghmac}`;
+    return `${process.env.API_URL}api/stream?t=${streamID}&e=${exp}&h=${ghmac}`;
 }
 
 export function verifyStream(id, hmac, exp) {

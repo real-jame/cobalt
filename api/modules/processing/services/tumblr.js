@@ -1,5 +1,5 @@
 import psl from "psl";
-import { genericUserAgent } from "../../config.js";
+import { genericUserAgent } from "../../../core/config.js";
 
 export default async function(obj) {
     let { subdomain } = psl.parse(obj.url.hostname);

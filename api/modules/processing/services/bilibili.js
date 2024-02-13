@@ -1,4 +1,4 @@
-import { genericUserAgent, maxVideoDuration } from "../../config.js";
+import { genericUserAgent, maxVideoDuration } from "../../../core/config.js";
 
 // TO-DO: quality picking, bilibili.tv support, and higher quality downloads (currently requires an account)
 export default async function(obj) {
